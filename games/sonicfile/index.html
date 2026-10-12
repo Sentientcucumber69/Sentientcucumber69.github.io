@@ -12,30 +12,18 @@
     <meta name="theme-color" content="#000">
     <meta name="description" content="JavaScript Sega Genesis Emulator.">
     <meta name="keywords" content="javascript, sega, genesis, emulator">
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, minimum-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
     <style>
       *{scrollbar-width:none;-ms-overflow-style:none}
       *::-webkit-scrollbar{display:none}
-
       html,body{padding:0;margin:0;overscroll-behavior:none;background-color:#000;touch-action:none;user-select:none;-moz-user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
-
       #container{display:none}
       input[type=file]{display:none}
       #email{position:fixed;right:0;bottom:0;padding-right:15px;line-height:3.2;font-family:Arial;font-size:16px;color:#fff;user-select:none;-webkit-user-select:none}
       #email a{text-decoration:none;color:#fff;background-color:transparent;border:0;outline:0}
-      #email a:focus{text-decoration: none; outline:1px solid #fff}
       #demo-loader{display:none;position:fixed;left:0;bottom:0;right:0;top:0;width:20vw;height:20vw;margin:auto auto;cursor:pointer;background-color:transparent;border:0;outline:0}
-      #demo-loader:focus{outline:1px solid #fff}
-      #demo-loader:hover{filter:brightness(110%)}
       #file-selector{display:none;position:fixed;left:0;bottom:0;right:0;top:0;width:20vw;height:20vw;margin:auto auto;cursor:pointer;background-color:transparent;border:0;outline:0}
-      #file-selector:focus{outline:1px solid #fff}
-      #file-selector:hover{filter:brightness(110%)}
-
       #game{width:100vw;height:100vh}
-
       .pleasewait{position:fixed;width:64px;height:64px;left:0;right:0;top:0;bottom:0;margin:auto auto;border:0}
       .lds-spinner{color:#fff;display:inline-block;position:relative;width:64px;height:64px}
       .lds-spinner div{transform-origin:32px 32px;animation:lds-spinner 1.2s linear infinite}
@@ -82,45 +70,39 @@
     <script src="Genesis.min.js"></script>
     <script>
       var container = document.getElementById("container")
-      var demoLoader = document.getElementById("demo-loader")
       var fileSelector = document.getElementById("file-selector")
-      var romFileInput = document.getElementById("romfile-input")
       var pleaseWait = document.querySelector(".pleasewait")
 
-      function isMobileDevice() {
-        return !!(
-          navigator.userAgent.match(/Android/i) ||
-          navigator.userAgent.match(/iPhone/i) ||
-          navigator.userAgent.match(/iPad/i) ||
-          navigator.userAgent.match(/iPod/i)
-        )
-      }
-
-      // --- AUTOMATED NO-PROMPT LOADER ---
+      // --- AUTOMATED NO-PROMPT INITIALIZER ---
       window.addEventListener("load", function () {
-        // Silently fetch your local ROM from the folder
+        // First step: Initialize the emulator canvas setup variables
+        embedGenesis({
+          container: "game",
+          name: "Sonic The Hedgehog",
+          soundEnabled: true,
+          showMobileControls: false
+        });
+
+        // Second step: Stream the local ROM binary from your folder directly into the awake engine
         fetch('sonic.md')
           .then(response => {
-            if (!response.ok) {
-              throw new Error('sonic.md file could not be fetched');
-            }
+            if (!response.ok) throw new Error('sonic.md file not found');
             return response.blob();
           })
           .then(blob => {
-            // Turn the downloaded data into a virtual hardware file
             var virtualFile = new File([blob], "sonic.md");
             
-            // Vanish the background buttons immediately
+            // Instantly hide the red menu icons if they tried to show up
             if (container) container.style.display = "none";
             if (fileSelector) fileSelector.style.display = "none";
             if (pleaseWait) pleaseWait.style.display = "block";
 
-            // Force engine boot loop
+            // Run the rom load loop directly on the engine instance window object
             window.loadRom(virtualFile);
           })
           .catch(error => {
             console.error('Error auto-launching local cartridge file:', error);
-            // Fallback: If your sonic.md is missing, show manual fallback prompt
+            // Fallback layout if your sonic.md is missing or capitalised incorrectly
             if (container) container.style.display = "block";
             if (fileSelector) fileSelector.style.display = "block";
           });

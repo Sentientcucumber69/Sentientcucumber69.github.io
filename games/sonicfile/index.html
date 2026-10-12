@@ -50,62 +50,48 @@
         <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
       </div>
     </div>
-    <div id="container">
-      <div id="email"><a href="mailto:info@lrusso.com">info@lrusso.com</a></div>
-      <button id="demo-loader">
-        <svg width="100%" height="100%" viewBox="0 0 502 502">
-          <circle fill="#FFF" cx="250" cy="250" r="200" />
-          <path fill="#b9180b" d="M251,1C112.929,1,1,112.929,1,251s111.929,250,250,250s250-111.929,250-250S389.071,1,251,1z M164.75,366  V136l230,115L164.75,366z"/>
-        </svg>
-      </button>
-      <button id="file-selector">
-        <svg width="100%" height="100%" viewBox="0 0 502 502">
-          <circle fill="#FFF" cx="250" cy="250" r="200" />
-          <path fill="#b9180b" d="M251,1C112.929,1,1,112.929,1,251s111.929,250,250,250s250-111.929,250-250S389.071,1,251,1z   M251.283,111.853L351,236.738h-56.935v73.761H208.51v-73.761h-56.941L251.283,111.853z M208.51,336.122v-19.418h85.556v19.418  H208.51z M294.065,341.665v10.186H208.51v-10.186H294.065z M391,380.147c0,5.522-4.477,10-10,10H121c-5.523,0-10-4.478-10-10  v-72.935c0-5.743,4.643-10.399,10.37-10.399s10.37,4.656,10.37,10.399v62.194h238.52v-62.194c0-5.743,4.643-10.399,10.37-10.399  S391,301.47,391,307.213V380.147z"/>
-        </svg>
-      </button>
-      <input type="file" id="romfile-input" accept=".32x,.bin,.md,application/octet-stream">
-    </div>
+    <div id="container"></div>
 
     <script src="Genesis.min.js"></script>
     <script>
-      var container = document.getElementById("container")
-      var fileSelector = document.getElementById("file-selector")
-      var pleaseWait = document.querySelector(".pleasewait")
+      var container = document.getElementById("container");
+      var pleaseWait = document.querySelector(".pleasewait");
 
-      // --- AUTOMATED NO-PROMPT INITIALIZER ---
+      function isMobileDevice() {
+        return !!(
+          navigator.userAgent.match(/Android/i) ||
+          navigator.userAgent.match(/iPhone/i) ||
+          navigator.userAgent.match(/iPad/i) ||
+          navigator.userAgent.match(/iPod/i)
+        )
+      }
+
+      // Automatically streams your local game file on window load
       window.addEventListener("load", function () {
-        // First step: Initialize the emulator canvas setup variables
-        embedGenesis({
-          container: "game",
-          name: "Sonic The Hedgehog",
-          soundEnabled: true,
-          showMobileControls: false
-        });
-
-        // Second step: Stream the local ROM binary from your folder directly into the awake engine
-        fetch('sonic.md')
-          .then(response => {
-            if (!response.ok) throw new Error('sonic.md file not found');
-            return response.blob();
-          })
-          .then(blob => {
-            var virtualFile = new File([blob], "sonic.md");
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "sonic.md", true);
+        xhr.responseType = "arraybuffer";
+        
+        xhr.addEventListener("readystatechange", function () {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            // Hide loading indicator instantly
+            if (pleaseWait) pleaseWait.style.display = "none";
             
-            // Instantly hide the red menu icons if they tried to show up
-            if (container) container.style.display = "none";
-            if (fileSelector) fileSelector.style.display = "none";
-            if (pleaseWait) pleaseWait.style.display = "block";
-
-            // Run the rom load loop directly on the engine instance window object
-            window.loadRom(virtualFile);
-          })
-          .catch(error => {
-            console.error('Error auto-launching local cartridge file:', error);
-            // Fallback layout if your sonic.md is missing or capitalised incorrectly
-            if (container) container.style.display = "block";
-            if (fileSelector) fileSelector.style.display = "block";
-          });
+            // Boot the Genesis system arrays natively
+            embedGenesis({
+              container: "game",
+              name: "Sonic The Hedgehog",
+              rom: xhr.response,
+              soundEnabled: true,
+              showMobileControls: isMobileDevice(),
+              backText: "BACK",
+              soundText: "SOUND",
+              loadText: "LOAD",
+              saveText: "SAVE"
+            });
+          }
+        });
+        xhr.send(null);
       });
     </script>
   </body>

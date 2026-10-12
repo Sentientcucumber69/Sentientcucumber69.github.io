@@ -38,19 +38,5 @@
         </button>
     </center>
 
-    <!-- Tiny raw script to trigger the fullscreen event -->
-    <script>
-        function goFullscreen() {
-            var iframe = document.getElementById('mario-frame');
-            if (iframe.requestFullscreen) {
-                iframe.requestFullscreen();
-            } else if (iframe.webkitRequestFullscreen) { /* Safari */
-                iframe.webkitRequestFullscreen();
-            } else if (iframe.msRequestFullscreen) { /* IE11 */
-                iframe.msRequestFullscreen();
-            }
-        }
-    </script>
-
 </body>
 </html>

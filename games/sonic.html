@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Sonic Arcade - Thing Thing Games</title>
+    <title>Sonic the Hedgehog - Thing Thing Games</title>
 </head>
 <body bgcolor="#C1E1C1" style="margin: 0; padding-top: 10px; padding-left: 8px;">
 
@@ -13,44 +13,20 @@
     <hr style="margin-top: 10px; margin-bottom: 15px;">
 
     <center>
-        <h1>Sonic the Hedgehog</h1>
-        <p>Controls: Up Arrow to Jump, Down Arrow to Roll/Spin-dash.</p>
+        <h1>Sonic the Hedgehog (1991 Sega Classic)</h1>
+        <p>Controls: Use your desktop Arrow Keys to navigate, and press 'A' or 'S' to Jump and Spin-Dash.</p>
 
-        <!-- Centered game window with high-speed performance tags and a Sonic ID -->
+        <!-- Centered game window running the local unblocked Genesis engine -->
         <iframe id="sonic-frame"
                 src="sonicfile/index.html" 
                 width="800" 
-                height="400" 
+                height="600" 
                 frameborder="0" 
                 style="border: 2px solid #333; background: #000;" 
                 loading="eager"
-                importance="high"
-                allowfullscreen="true"
-                webkitallowfullscreen="true"
-                mozallowfullscreen="true">
+                importance="high">
         </iframe>
-
-        <br><br>
-
-        <!-- Unpolished Fullscreen Button -->
-        <button onclick="goFullscreen();" style="padding: 5px 10px; cursor: pointer; font-weight: bold;">
-            Fullscreen
-        </button>
     </center>
-
-    <!-- Tiny raw script to trigger the fullscreen event -->
-    <script>
-        function goFullscreen() {
-            var iframe = document.getElementById('sonic-frame');
-            if (iframe.requestFullscreen) {
-                iframe.requestFullscreen();
-            } else if (iframe.webkitRequestFullscreen) { /* Safari */
-                iframe.webkitRequestFullscreen();
-            } else if (iframe.msRequestFullscreen) { /* IE11 */
-                iframe.msRequestFullscreen();
-            }
-        }
-    </script>
 
 </body>
 </html>

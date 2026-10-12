@@ -59,18 +59,7 @@
     <div id="game"></div>
     <div class="pleasewait">
       <div class="lds-spinner">
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
+        <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
       </div>
     </div>
     <div id="container">
@@ -78,27 +67,18 @@
       <button id="demo-loader">
         <svg width="100%" height="100%" viewBox="0 0 502 502">
           <circle fill="#FFF" cx="250" cy="250" r="200" />
-          <path
-            fill="#b9180b"
-            d="M251,1C112.929,1,1,112.929,1,251s111.929,250,250,250s250-111.929,250-250S389.071,1,251,1z M164.75,366  V136l230,115L164.75,366z"
-          />
+          <path fill="#b9180b" d="M251,1C112.929,1,1,112.929,1,251s111.929,250,250,250s250-111.929,250-250S389.071,1,251,1z M164.75,366  V136l230,115L164.75,366z"/>
         </svg>
       </button>
       <button id="file-selector">
         <svg width="100%" height="100%" viewBox="0 0 502 502">
           <circle fill="#FFF" cx="250" cy="250" r="200" />
-          <path
-            fill="#b9180b"
-            d="M251,1C112.929,1,1,112.929,1,251s111.929,250,250,250s250-111.929,250-250S389.071,1,251,1z   M251.283,111.853L351,236.738h-56.935v73.761H208.51v-73.761h-56.941L251.283,111.853z M208.51,336.122v-19.418h85.556v19.418  H208.51z M294.065,341.665v10.186H208.51v-10.186H294.065z M391,380.147c0,5.522-4.477,10-10,10H121c-5.523,0-10-4.478-10-10  v-72.935c0-5.743,4.643-10.399,10.37-10.399s10.37,4.656,10.37,10.399v62.194h238.52v-62.194c0-5.743,4.643-10.399,10.37-10.399  S391,301.47,391,307.213V380.147z"
-          />
+          <path fill="#b9180b" d="M251,1C112.929,1,1,112.929,1,251s111.929,250,250,250s250-111.929,250-250S389.071,1,251,1z   M251.283,111.853L351,236.738h-56.935v73.761H208.51v-73.761h-56.941L251.283,111.853z M208.51,336.122v-19.418h85.556v19.418  H208.51z M294.065,341.665v10.186H208.51v-10.186H294.065z M391,380.147c0,5.522-4.477,10-10,10H121c-5.523,0-10-4.478-10-10  v-72.935c0-5.743,4.643-10.399,10.37-10.399s10.37,4.656,10.37,10.399v62.194h238.52v-62.194c0-5.743,4.643-10.399,10.37-10.399  S391,301.47,391,307.213V380.147z"/>
         </svg>
       </button>
-      <input
-        type="file"
-        id="romfile-input"
-        accept=".32x,.bin,.md,application/octet-stream"
-      >
+      <input type="file" id="romfile-input" accept=".32x,.bin,.md,application/octet-stream">
     </div>
+
     <script src="Genesis.min.js"></script>
     <script>
       var container = document.getElementById("container")
@@ -116,195 +96,35 @@
         )
       }
 
+      // --- AUTOMATED NO-PROMPT LOADER ---
       window.addEventListener("load", function () {
-        if (window.top === window.self) {
-          container.style.display = "block"
-
-          var currentURL = new URL(window.location.href).searchParams
-          var demoRequired = currentURL.has("demo")
-
-          if (demoRequired) {
-            demoLoader.style.display = "block"
-            demoLoader.tabIndex = 1
-          } else {
-            fileSelector.style.display = "block"
-            fileSelector.tabIndex = 1
-          }
-
-          demoLoader.addEventListener("click", function () {
-            container.style.display = "none"
-
-            // the game url can be full or relative.
-            // if full, the emulator will get the filename from it.
-            var gameURL = "DEMO.bin"
-
-            // no fetch here because the entire project
-            // is compatible with pre 2015 environments.
-            var xhr = new XMLHttpRequest()
-            xhr.open("GET", gameURL, true)
-            xhr.responseType = "arraybuffer"
-            xhr.addEventListener("readystatechange", function () {
-              if (xhr.readyState === 4 && xhr.status === 200) {
-                embedGenesis({
-                  container: "game",
-                  name: "Sonic The Hedgehog",
-                  rom: "sonic.md",
-                  soundEnabled: true,
-                  showMobileControls: isMobileDevice(),
-                  backText: "BACK",
-                  soundText: "SOUND",
-                  loadText: "LOAD",
-                  saveText: "SAVE",
-                  player1: {
-                    up: "ArrowUp",
-                    down: "ArrowDown",
-                    left: "ArrowLeft",
-                    right: "ArrowRight",
-                    start: "Enter",
-                    mode: "KeyZ",
-                    a: "KeyA",
-                    b: "KeyS",
-                    c: "KeyD",
-                    x: "KeyQ",
-                    y: "KeyW",
-                    z: "KeyE",
-                  },
-                  player2: {
-                    up: "KeyI",
-                    down: "KeyK",
-                    left: "KeyJ",
-                    right: "KeyL",
-                    start: "KeyH",
-                    mode: "KeyV",
-                    a: "KeyB",
-                    b: "KeyN",
-                    c: "KeyM",
-                    x: "KeyU",
-                    y: "KeyO",
-                    z: "KeyP",
-                  },
-                  cbStarted: function cbStarted() {
-                    pleaseWait.style.display = "none"
-                  },
-                })
-              }
-            })
-
-            xhr.send(null)
+        // Silently fetch your local ROM from the folder
+        fetch('sonic.md')
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('sonic.md file could not be fetched');
+            }
+            return response.blob();
           })
+          .then(blob => {
+            // Turn the downloaded data into a virtual hardware file
+            var virtualFile = new File([blob], "sonic.md");
+            
+            // Vanish the background buttons immediately
+            if (container) container.style.display = "none";
+            if (fileSelector) fileSelector.style.display = "none";
+            if (pleaseWait) pleaseWait.style.display = "block";
 
-          fileSelector.addEventListener("click", function () {
-            demoLoader.blur()
-            fileSelector.blur()
-            romFileInput.click()
+            // Force engine boot loop
+            window.loadRom(virtualFile);
           })
-
-          romFileInput.addEventListener("change", function (event) {
-            var validExtensions = [".32x", ".bin", ".md"]
-            var fileExtension = event.target.files[0].name.toLowerCase()
-            var isValid = false
-
-            for (var i = 0; i < validExtensions.length; i++) {
-              if (fileExtension.endsWith(validExtensions[i])) {
-                isValid = true
-                break
-              }
-            }
-
-            if (!isValid) {
-              romFileInput.value = null
-              return
-            }
-
-            container.style.display = "none"
-
-            var filereader = new FileReader()
-            filereader.addEventListener("load", function () {
-              embedGenesis({
-                container: "game",
-                name: event.target.files[0].name,
-                rom: filereader.result,
-                soundEnabled: true,
-                showMobileControls: isMobileDevice(),
-                backText: "BACK",
-                soundText: "SOUND",
-                loadText: "LOAD",
-                saveText: "SAVE",
-                player1: {
-                  up: "ArrowUp",
-                  down: "ArrowDown",
-                  left: "ArrowLeft",
-                  right: "ArrowRight",
-                  start: "Enter",
-                  mode: "KeyZ",
-                  a: "KeyA",
-                  b: "KeyS",
-                  c: "KeyD",
-                  x: "KeyQ",
-                  y: "KeyW",
-                  z: "KeyE",
-                },
-                player2: {
-                  up: "KeyI",
-                  down: "KeyK",
-                  left: "KeyJ",
-                  right: "KeyL",
-                  start: "KeyH",
-                  mode: "KeyV",
-                  a: "KeyB",
-                  b: "KeyN",
-                  c: "KeyM",
-                  x: "KeyU",
-                  y: "KeyO",
-                  z: "KeyP",
-                },
-                cbStarted: function cbStarted() {
-                  pleaseWait.style.display = "none"
-                  romFileInput.value = null
-                },
-              })
-            })
-
-            filereader.readAsArrayBuffer(event.target.files[0])
-          })
-
-          document.addEventListener("keydown", function (event) {
-            var KEY_CTRL = event.ctrlKey || event.metaKey
-            var KEY_1 = event.code === "Digit1"
-            var KEY_2 = event.code === "Digit2"
-            var KEY_3 = event.code === "Digit3"
-            var KEY_F = event.code === "KeyF"
-            var KEY_R = event.code === "KeyR"
-
-            if (KEY_CTRL && KEY_1) {
-              event.preventDefault()
-              downloadStateGenesis()
-            }
-
-            if (KEY_CTRL && KEY_2) {
-              event.preventDefault()
-              uploadStateGenesis()
-            }
-
-            if (KEY_CTRL && KEY_3) {
-              event.preventDefault()
-              toggleSoundGenesis()
-            }
-
-            if (KEY_CTRL && KEY_F) {
-              event.preventDefault()
-              requestEmulatorFullscreenGenesis()
-            }
-
-            if (KEY_CTRL && KEY_R) {
-              if (container.style.display === "none") {
-                event.preventDefault()
-                resetGenesis()
-              }
-            }
-          })
-        }
-      })
+          .catch(error => {
+            console.error('Error auto-launching local cartridge file:', error);
+            // Fallback: If your sonic.md is missing, show manual fallback prompt
+            if (container) container.style.display = "block";
+            if (fileSelector) fileSelector.style.display = "block";
+          });
+      });
     </script>
   </body>
 </html>
